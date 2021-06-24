@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 
 @Api(tags = "医院设置管理")
 @RestController
 @RequestMapping("/admin/hosp/hospitalSet")
+@CrossOrigin //跨域注解
 public class HospitalSetController {
 
     @Autowired
@@ -64,7 +66,8 @@ public class HospitalSetController {
      * @param hospitalSetQueryVo
      * @return
      */
-    @GetMapping("findPage/{current}/{limit}")
+    @ApiOperation(value = "条件查询带分页")
+    @PostMapping("findPage/{current}/{limit}")
     public Result findPageHospitalSet(@PathVariable long current,
                                       @PathVariable long limit,
                                       @RequestBody(required = false) HospitalSetQueryVo hospitalSetQueryVo) {
@@ -76,9 +79,9 @@ public class HospitalSetController {
         String hosname = hospitalSetQueryVo.getHosname();
         String hoscode = hospitalSetQueryVo.getHoscode();
         if (!StringUtils.isEmpty(hosname))
-            queryWrapper.like("hosname", hosname);
-        if (!StringUtils.isEmpty(hosname))
-            queryWrapper.eq("hoscode", hoscode);
+            queryWrapper.like("hosname", hospitalSetQueryVo.getHosname());
+        if (!StringUtils.isEmpty(hoscode))
+            queryWrapper.eq("hoscode", hospitalSetQueryVo.getHoscode());
 
         //调用方法实现分页查询
         Page<HospitalSet> hospitalSetPage = hospitalSetService.page(page, queryWrapper);
@@ -92,6 +95,7 @@ public class HospitalSetController {
      * @return
      */
     @PostMapping("saveHospitalSet")
+    @ApiOperation(value = "添加医院设置")
     public Result saveHospitalSet(@RequestBody HospitalSet hospitalSet) {
         //设置状态1能使用，0不能使用
         hospitalSet.setStatus(1);
@@ -111,6 +115,7 @@ public class HospitalSetController {
      * @return
      */
     @GetMapping("getHospSet/{id}")
+    @ApiOperation(value = "根据id获取医院设置")
     public Result getHospSet(@PathVariable Long id) {
         HospitalSet hospitalSet = hospitalSetService.getById(id);
         return Result.ok(hospitalSet);
@@ -122,6 +127,7 @@ public class HospitalSetController {
      * @return
      */
     @PostMapping("updateHospitalSet")
+    @ApiOperation(value = "修改医院设置")
     public Result updateHospitalSet(@RequestBody HospitalSet hospitalSet) {
         boolean b = hospitalSetService.updateById(hospitalSet);
         if (b)
@@ -136,6 +142,7 @@ public class HospitalSetController {
      * @return
      */
     @DeleteMapping("batchRemove")
+    @ApiOperation(value = "批量删除医院设置")
     public Result batchRemoveHospitalSet(@RequestBody List<Long> idList) {
         hospitalSetService.removeByIds(idList);
         return Result.ok();
@@ -148,6 +155,7 @@ public class HospitalSetController {
      * @return
      */
     @PutMapping("lockHospitalSet/{id}/{status}")
+    @ApiOperation(value = "医院设定的锁定和解锁")
     public Result lockHospitalSet(@PathVariable Long id,
                                   @PathVariable Integer status)
     {
@@ -169,6 +177,7 @@ public class HospitalSetController {
      * @return
      */
     @PutMapping("sendKey/{id}")
+    @ApiOperation(value = "发送签名密钥")
     public Result sendKey(@PathVariable Long id){
         //先查询医院设置信息
         HospitalSet hospitalSet = hospitalSetService.getById(id);

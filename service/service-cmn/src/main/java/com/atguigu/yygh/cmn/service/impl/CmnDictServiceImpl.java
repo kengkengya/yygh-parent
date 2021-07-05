@@ -11,16 +11,19 @@ import com.atguigu.yygh.vo.cmn.DictEeVo;
 import com.baomidou.mybatisplus.core.assist.ISqlRunner;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CmnDictServiceImpl extends ServiceImpl<CmnDictMapper, Dict> implements CmnDictService {
@@ -89,6 +92,63 @@ public class CmnDictServiceImpl extends ServiceImpl<CmnDictMapper, Dict> impleme
     }
 
     /**
+     *
+     * @param dictCode
+     * @param value
+     * @return
+     */
+    @Override
+    public String getDictName(String dictCode, String value) {
+
+        //如果dictCode为空
+        if(StringUtils.isEmpty(dictCode)){
+            QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+            wrapper.eq("value",value);
+            Dict dict = baseMapper.selectOne(wrapper);
+            return dict.getName();
+        }else{
+            //根据dictcode查询dict对象，得到dict的 id值
+            Dict codeDict = this.getDictByCode(dictCode);
+            Long parentId = codeDict.getId();
+            System.out.println(parentId);
+            System.out.println(value);
+            //根据parentId和value值查询name
+            Dict dict = baseMapper.selectOne(new QueryWrapper<Dict>().eq("parent_id", parentId)
+                    .eq("value", value));
+            return dict.getName();
+
+
+        }
+
+    }
+
+    /**
+     * 根据dictCode查找下级节点
+     * @param dictCode
+     * @return
+     */
+    @Override
+    public List<Dict> findByDictCode(String dictCode) {
+        //先根据dict_code得到自己的id
+        Dict dict = this.getDictByCode(dictCode);
+        Long dictId = dict.getId();
+        //在找到当前id下的所有子数据
+        return this.findChildData(dictId);
+    }
+
+    /**
+     * 根据dict_code查询Dict
+     * @param dictCode
+     * @return
+     */
+    private Dict getDictByCode(String dictCode){
+        QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+        wrapper.eq("dict_code",dictCode);
+        Dict dict = baseMapper.selectOne(wrapper);
+        return dict;
+    }
+
+    /**
      * 查询当前id是否有子数据
      *
      * @param id
@@ -100,4 +160,7 @@ public class CmnDictServiceImpl extends ServiceImpl<CmnDictMapper, Dict> impleme
         Integer count = baseMapper.selectCount(queryWrapper);
         return count > 0;
     }
+
+
+
 }

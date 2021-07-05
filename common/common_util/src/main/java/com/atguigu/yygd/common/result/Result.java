@@ -1,21 +1,28 @@
 package com.atguigu.yygd.common.result;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 全局统一返回结果类
  */
 @Data
 @ApiModel(value = "全局统一返回结果")
-public class Result<T> {
+public class Result<T>  {
+
+
 
     @ApiModelProperty(value = "返回码")
     private Integer code;
 
+
     @ApiModelProperty(value = "返回消息")
     private String message;
+
 
     @ApiModelProperty(value = "返回数据")
     private T data;

@@ -1,4 +1,3 @@
-/*
 package com.atguigu.yygh.common.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -24,12 +23,11 @@ import java.time.Duration;
 @Configuration
 @EnableCaching
 public class RedisConfig {
-    */
 /**
      * 自定义key规则
      *
      * @return
-     *//*
+     */
 
     @Bean
     public KeyGenerator keyGenerator() {
@@ -47,13 +45,12 @@ public class RedisConfig {
         };
     }
 
-    */
 /**
      * 设置RedisTemplate规则
      *
      * @param redisConnectionFactory
      * @return
-     *//*
+     */
 
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
@@ -79,13 +76,12 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    */
 /**
      * 设置CacheManager缓存规则
      *
      * @param factory
      * @return
-     *//*
+     */
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory factory) {
@@ -113,4 +109,3 @@ public class RedisConfig {
 }
 
 
-*/

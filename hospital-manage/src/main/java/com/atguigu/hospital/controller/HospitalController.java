@@ -4,6 +4,7 @@ import com.atguigu.hospital.service.ApiService;
 import com.atguigu.hospital.service.HospitalService;
 import com.atguigu.hospital.util.*;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -39,6 +40,7 @@ public class HospitalController {
 	 * @param request
 	 * @return
 	 */
+	@ApiOperation("预约下单接口")
 	@PostMapping("/order/submitOrder")
 	public Result AgreeAccountLendProject(HttpServletRequest request, HttpServletResponse response) {
 		try {

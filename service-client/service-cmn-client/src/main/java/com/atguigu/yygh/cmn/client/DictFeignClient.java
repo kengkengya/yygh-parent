@@ -17,7 +17,7 @@ public interface DictFeignClient {
     @ApiOperation("根据dictCode和value查询")
     public String getName(@PathVariable("dictCode") String dictCode, @PathVariable("value") String value);
 
-    @GetMapping("/getName/{value}")
+    @GetMapping("/admin/cmn/dict/getName/{value}")
     @ApiOperation("根据value查询")
     public String getName(@PathVariable("value") String value);
 }

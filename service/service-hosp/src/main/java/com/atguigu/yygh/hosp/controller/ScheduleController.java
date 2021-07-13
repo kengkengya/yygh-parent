@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@Api("排班规则")
+@Api(tags = "排班规则")
 @RequestMapping("/admin/hosp/schedule")
 
 public class ScheduleController {

@@ -63,7 +63,7 @@ public class CmnDictController {
         return name;
     }
 
-    @GetMapping("/findByDictCode/{dictCode}")
+    @GetMapping("findByDictCode/{dictCode}")
     @ApiOperation("根据dictcode获取下级节点")
     public Result findByDictCode(@PathVariable String dictCode){
         List<Dict> list = dictService.findByDictCode(dictCode);

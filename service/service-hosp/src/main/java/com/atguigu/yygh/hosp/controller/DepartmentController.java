@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Api("科室信息")
+@Api(tags = "科室信息")
 @RequestMapping("/admin/hosp/department")
 
 public class DepartmentController {

@@ -15,6 +15,9 @@
         <module>service-hosp</module>
         <module>service-cmn</module>
         <module>service-user</module>
+        <module>service-oss</module>
+        <module>service-order</module>
+        <module>service-sms</module>
     </modules>
 
     <properties>
@@ -58,12 +61,25 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>2.2.8.RELEASE</version>
         </dependency>
         <!-- 服务注册 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
+<!--        &lt;!&ndash; redis &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-redis</artifactId>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; spring2.X集成redis所需common-pool2&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-pool2</artifactId>-->
+<!--            <version>2.6.0</version>-->
+<!--        </dependency>-->
         <!-- 流量控制 -->
         <!-- <dependency>
              <groupId>com.alibaba.cloud</groupId>

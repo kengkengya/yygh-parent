@@ -11,11 +11,12 @@ import com.atguigu.yygh.vo.cmn.DictEeVo;
 import com.baomidou.mybatisplus.core.assist.ISqlRunner;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -79,20 +80,20 @@ public class CmnDictServiceImpl extends ServiceImpl<CmnDictMapper, Dict> impleme
 
     /**
      * 导入数据字典
+     *
      * @param file
      */
     @Override
     public void importDictData(MultipartFile file) {
         try {
-            EasyExcel.read(file.getInputStream(),DictEeVo.class,new DictListener(baseMapper)).sheet()
-            .doRead();
+            EasyExcel.read(file.getInputStream(), DictEeVo.class, new DictListener(baseMapper)).sheet()
+                    .doRead();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     *
      * @param dictCode
      * @param value
      * @return
@@ -101,12 +102,14 @@ public class CmnDictServiceImpl extends ServiceImpl<CmnDictMapper, Dict> impleme
     public String getDictName(String dictCode, String value) {
 
         //如果dictCode为空
-        if(StringUtils.isEmpty(dictCode)){
+        if (StringUtils.isEmpty(dictCode)) {
             QueryWrapper<Dict> wrapper = new QueryWrapper<>();
-            wrapper.eq("value",value);
+            wrapper.eq("value", value);
             Dict dict = baseMapper.selectOne(wrapper);
-            return dict.getName();
-        }else{
+            if (dict != null) {
+                return dict.getName();
+            }
+        } else {
             //根据dictcode查询dict对象，得到dict的 id值
             Dict codeDict = this.getDictByCode(dictCode);
             Long parentId = codeDict.getId();
@@ -117,19 +120,20 @@ public class CmnDictServiceImpl extends ServiceImpl<CmnDictMapper, Dict> impleme
                     .eq("value", value));
             return dict.getName();
 
-
         }
-
+        return "";
     }
 
     /**
      * 根据dictCode查找下级节点
+     *
      * @param dictCode
      * @return
      */
     @Override
     public List<Dict> findByDictCode(String dictCode) {
         //先根据dict_code得到自己的id
+        System.out.println("findByDictCode-----"+dictCode);
         Dict dict = this.getDictByCode(dictCode);
         Long dictId = dict.getId();
         //在找到当前id下的所有子数据
@@ -138,12 +142,13 @@ public class CmnDictServiceImpl extends ServiceImpl<CmnDictMapper, Dict> impleme
 
     /**
      * 根据dict_code查询Dict
+     *
      * @param dictCode
      * @return
      */
-    private Dict getDictByCode(String dictCode){
+    private Dict getDictByCode(String dictCode) {
         QueryWrapper<Dict> wrapper = new QueryWrapper<>();
-        wrapper.eq("dict_code",dictCode);
+        wrapper.eq("dict_code", dictCode);
         Dict dict = baseMapper.selectOne(wrapper);
         return dict;
     }
@@ -160,7 +165,6 @@ public class CmnDictServiceImpl extends ServiceImpl<CmnDictMapper, Dict> impleme
         Integer count = baseMapper.selectCount(queryWrapper);
         return count > 0;
     }
-
 
 
 }

@@ -7,13 +7,19 @@
       <module fileurl="file://$PROJECT_DIR$/common/common_util/common_util.iml" filepath="$PROJECT_DIR$/common/common_util/common_util.iml" />
       <module fileurl="file://$PROJECT_DIR$/hospital-manage/hospital-manage.iml" filepath="$PROJECT_DIR$/hospital-manage/hospital-manage.iml" />
       <module fileurl="file://$PROJECT_DIR$/model/model.iml" filepath="$PROJECT_DIR$/model/model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/rabbitmq-util/rabbitmq-util.iml" filepath="$PROJECT_DIR$/common/rabbitmq-util/rabbitmq-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service.iml" filepath="$PROJECT_DIR$/service/service.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-client.iml" filepath="$PROJECT_DIR$/service-client/service-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-cmn/service-cmn.iml" filepath="$PROJECT_DIR$/service/service-cmn/service-cmn.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-cmn-client/service-cmn-client.iml" filepath="$PROJECT_DIR$/service-client/service-cmn-client/service-cmn-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-gateway/service-gateway.iml" filepath="$PROJECT_DIR$/service-gateway/service-gateway.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-hosp/service-hosp.iml" filepath="$PROJECT_DIR$/service/service-hosp/service-hosp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-client/service-hosp-client/service-hosp-client.iml" filepath="$PROJECT_DIR$/service-client/service-hosp-client/service-hosp-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service-order/service-order.iml" filepath="$PROJECT_DIR$/service/service-order/service-order.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service-oss/service-oss.iml" filepath="$PROJECT_DIR$/service/service-oss/service-oss.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service-sms/service-sms.iml" filepath="$PROJECT_DIR$/service/service-sms/service-sms.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-user/service-user.iml" filepath="$PROJECT_DIR$/service/service-user/service-user.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-client/service-user-client/service-user-client.iml" filepath="$PROJECT_DIR$/service-client/service-user-client/service-user-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/service-util/service-util.iml" filepath="$PROJECT_DIR$/common/service-util/service-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/yygh-parent.iml" filepath="$PROJECT_DIR$/yygh-parent.iml" />
     </modules>

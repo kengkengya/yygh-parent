@@ -11,6 +11,7 @@
     <groupId>com.atguigu</groupId>
     <artifactId>hospital-manage</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>hospital-manage</name>
     <description>Demo project for Spring Boot</description>
 
@@ -86,18 +87,18 @@
             <version>1.13</version>
         </dependency>
 
-        <!--        &lt;!&ndash; redis &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-starter-data-redis</artifactId>-->
-        <!--        </dependency>-->
+        <!-- redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
 
-        <!--        &lt;!&ndash; spring2.X集成redis所需common-pool2&ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.commons</groupId>-->
-        <!--            <artifactId>commons-pool2</artifactId>-->
-        <!--            <version>2.6.0</version>-->
-        <!--        </dependency>-->
+        <!-- spring2.X集成redis所需common-pool2-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.6.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

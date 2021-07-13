@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(value = "全局统一返回结果")
-public class Result<T>  {
+public class Result<T>{
 
 
 

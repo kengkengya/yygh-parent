@@ -1,0 +1,18 @@
+2021-07-01 13:21:21.063 [restartedMain] ERROR o.s.b.diagnostics.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field dictFeignClient in com.atguigu.yygh.hosp.service.impl.HospitalServiceImpl required a bean of type 'com.atguigu.yygh.cmn.client.DictFeignClient' that could not be found.
+
+The injection point has the following annotations:
+	- @org.springframework.beans.factory.annotation.Autowired(required=true)
+
+
+Action:
+
+Consider defining a bean of type 'com.atguigu.yygh.cmn.client.DictFeignClient' in your configuration.
+

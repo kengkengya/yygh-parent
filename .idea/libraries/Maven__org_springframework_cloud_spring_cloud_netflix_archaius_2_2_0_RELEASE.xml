@@ -1,13 +1,13 @@
 <component name="libraryTable">
-  <library name="Maven: org.springframework.cloud:spring-cloud-netflix-archaius:2.2.0.RELEASE">
+  <library name="Maven: io.projectreactor:reactor-core:3.3.12.RELEASE">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/repo/org/springframework/cloud/spring-cloud-netflix-archaius/2.2.0.RELEASE/spring-cloud-netflix-archaius-2.2.0.RELEASE.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/repo/io/projectreactor/reactor-core/3.3.12.RELEASE/reactor-core-3.3.12.RELEASE.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/repo/org/springframework/cloud/spring-cloud-netflix-archaius/2.2.0.RELEASE/spring-cloud-netflix-archaius-2.2.0.RELEASE-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/repo/io/projectreactor/reactor-core/3.3.12.RELEASE/reactor-core-3.3.12.RELEASE-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/repo/org/springframework/cloud/spring-cloud-netflix-archaius/2.2.0.RELEASE/spring-cloud-netflix-archaius-2.2.0.RELEASE-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/repo/io/projectreactor/reactor-core/3.3.12.RELEASE/reactor-core-3.3.12.RELEASE-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

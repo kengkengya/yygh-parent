@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.atguigu:rabbit_util:0.0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/repo/com/atguigu/rabbit_util/0.0.1-SNAPSHOT/rabbit_util-0.0.1-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/repo/com/atguigu/rabbit_util/0.0.1-SNAPSHOT/rabbit_util-0.0.1-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/repo/com/atguigu/rabbit_util/0.0.1-SNAPSHOT/rabbit_util-0.0.1-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

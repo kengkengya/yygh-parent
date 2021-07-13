@@ -12,20 +12,23 @@ import com.atguigu.yygh.model.order.OrderInfo;
 import com.atguigu.yygh.model.user.Patient;
 import com.atguigu.yygh.order.mapper.OrderMapper;
 import com.atguigu.yygh.order.service.OrderService;
+import com.atguigu.yygh.order.service.WeixinService;
 import com.atguigu.yygh.user.client.UserFeignClient;
 import com.atguigu.yygh.vo.hosp.ScheduleOrderVo;
 import com.atguigu.yygh.vo.msm.MsmVo;
-import com.atguigu.yygh.vo.order.OrderMqVo;
-import com.atguigu.yygh.vo.order.SignInfoVo;
+import com.atguigu.yygh.vo.order.*;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implements OrderService {
@@ -38,6 +41,99 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
 
     @Autowired
     private RabbitService rabbitService;
+
+    @Autowired
+    private WeixinService weixinService;
+
+
+
+
+    @Override
+    public void patientTips() {
+        QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("reserve_date",new DateTime().toString("yyyy-MM-dd"));
+        List<OrderInfo> orderInfoList = baseMapper.selectList(queryWrapper);
+        for(OrderInfo orderInfo : orderInfoList) {
+            //短信提示
+            MsmVo msmVo = new MsmVo();
+            msmVo.setPhone(orderInfo.getPatientPhone());
+            String reserveDate = new DateTime(orderInfo.getReserveDate()).toString("yyyy-MM-dd") + (orderInfo.getReserveTime()==0 ? "上午": "下午");
+            Map<String,Object> param = new HashMap<String,Object>(){{
+                put("title", orderInfo.getHosname()+"|"+orderInfo.getDepname()+"|"+orderInfo.getTitle());
+                put("reserveDate", reserveDate);
+                put("name", orderInfo.getPatientName());
+            }};
+            msmVo.setParam(param);
+            //进入mq消息队列
+            rabbitService.sendMessage(MqConst.EXCHANGE_DIRECT_MSM, MqConst.ROUTING_MSM_ITEM, msmVo);
+        }
+
+    }
+
+    @Override
+    public Map<String, Object> getCountMap(OrderCountQueryVo orderCountQueryVo) {
+        Map<String, Object> map = new HashMap<>();
+
+        List<OrderCountVo> orderCountVoList
+                = baseMapper.selectOrderCount(orderCountQueryVo);
+        //日期列表
+        List<String> dateList
+                =orderCountVoList.stream().map(OrderCountVo::getReserveDate).collect(Collectors.toList());
+        //统计列表
+        List<Integer> countList
+                =orderCountVoList.stream().map(OrderCountVo::getCount).collect(Collectors.toList());
+        map.put("dateList", dateList);
+        map.put("countList", countList);
+        return map;
+
+    }
+
+    @Override
+    public boolean cancel(Long orderId) {
+        //获取订单信息
+        OrderInfo orderInfo = baseMapper.selectById(orderId);
+        //获取取消订单时间
+        Date quitTime = orderInfo.getQuitTime();
+        DateTime dateTime = new DateTime(quitTime);
+        if (dateTime.isBeforeNow()) {
+            throw new YyghException(ResultCodeEnum.CANCEL_ORDER_NO);
+        }
+        //调用医院接口
+        SignInfoVo signInfoVo = hospFeignClient.getSignInfoVo(orderInfo.getHoscode());
+        if (null == signInfoVo) {
+            throw new YyghException(ResultCodeEnum.PARAM_ERROR);
+        }
+        Map<String, Object> reqMap = new HashMap<>();
+        reqMap.put("hoscode", orderInfo.getHoscode());
+        reqMap.put("hosRecordId", orderInfo.getHosRecordId());
+        reqMap.put("timestamp", HttpRequestHelper.getTimestamp());
+        String sign = HttpRequestHelper.getSign(reqMap, signInfoVo.getSignKey());
+        reqMap.put("sign", sign);
+
+        JSONObject result = HttpRequestHelper.sendRequest(reqMap, signInfoVo.getApiUrl() + "/order/updateCancelStatus");
+        //根据result进行相关操作
+        if (result.getInteger("code") != 200) {
+            throw new YyghException(result.getString("message"), ResultCodeEnum.FAIL.getCode());
+        } else {
+            //调用微信做退款
+            if (orderInfo.getOrderStatus().intValue() == ResultCodeEnum.SUCCESS.getCode().intValue()) {
+                //如果已经支付，调用微信接口进行退款
+                Boolean refund = weixinService.refund(orderId);
+                if (!(refund)) {
+                    throw new YyghException(ResultCodeEnum.CANCEL_ORDER_FAIL);
+                }
+                //更新订单信息
+                baseMapper.updateById(orderInfo);
+                //发送mq更新预约数量
+                //TODO 短信内容设置
+            }
+
+            return true;
+
+        }
+
+
+    }
 
     //生成订单
     @Override
@@ -54,7 +150,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
         }
         //获取签名信息
         SignInfoVo signInfoVo = hospFeignClient.getSignInfoVo(scheduleOrderVo.getHoscode());
-        System.out.println("signInfoVo"+signInfoVo);
+        System.out.println("signInfoVo" + signInfoVo);
         //添加到订单的表里
         OrderInfo orderInfo = new OrderInfo();
         //将scheduleOrderVo复制到orderInfo
@@ -99,13 +195,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
         String sign = HttpRequestHelper.getSign(paramMap, signInfoVo.getSignKey());
         paramMap.put("sign", sign);
         //请求医院系统接口
-        System.out.println("url-----"+signInfoVo.getApiUrl());
+        System.out.println("url-----" + signInfoVo.getApiUrl());
         //todo 请求路径跳转问题！
 
 
         JSONObject result = HttpRequestHelper.sendRequest(paramMap, signInfoVo.getApiUrl() + "/order/submitOrder");
-        System.out.println("result:"+result);
-        if (result.getInteger("code")==200) {
+        System.out.println("result:" + result);
+        if (result.getInteger("code") == 200) {
             JSONObject jsonObject = result.getJSONObject("data");
             //预约记录唯一标识（医院预约记录主键）
             String hosRecordId = jsonObject.getString("hosRecordId");
@@ -121,14 +217,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
             orderInfo.setFetchTime(fetchTime);
             orderInfo.setFetchAddress(fetchAddress);
             int updateById = baseMapper.updateById(orderInfo);
-            System.out.println("updateById"+updateById);
+            System.out.println("updateById" + updateById);
             //排班可预约数
             Integer reservedNumber = jsonObject.getInteger("reservedNumber");
             //排班剩余预约数
             Integer availableNumber = jsonObject.getInteger("availableNumber");
             //发送mq信息更新号源和短信通知
             //发送mq进行号源的更新
-            OrderMqVo orderMqVo =  new OrderMqVo();
+            OrderMqVo orderMqVo = new OrderMqVo();
             orderMqVo.setScheduleId(orderInfo.getScheduleId());
             orderMqVo.setReservedNumber(reservedNumber);
             orderMqVo.setAvailableNumber(availableNumber);
@@ -138,9 +234,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
             //封装短信模板Map
             String reserveDate =
                     new DateTime(orderInfo.getReserveDate()).toString("yyyy-MM-dd")
-                            + (orderInfo.getReserveTime()==0 ? "上午": "下午");
-            Map<String,Object> param = new HashMap<String,Object>(){{
-                put("title", orderInfo.getHosname()+"|"+orderInfo.getDepname()+"|"+orderInfo.getTitle());
+                            + (orderInfo.getReserveTime() == 0 ? "上午" : "下午");
+            Map<String, Object> param = new HashMap<String, Object>() {{
+                put("title", orderInfo.getHosname() + "|" + orderInfo.getDepname() + "|" + orderInfo.getTitle());
                 put("amount", orderInfo.getAmount());
                 put("reserveDate", reserveDate);
                 put("name", orderInfo.getPatientName());
@@ -165,6 +261,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
 
     /**
      * 根据订单id查询详情
+     *
      * @param orderId
      * @return
      */
@@ -172,6 +269,43 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
     public OrderInfo getOrderById(String orderId) {
         OrderInfo orderInfo = baseMapper.selectById(orderId);
         return this.packOrderInfo(orderInfo);
+
+    }
+
+    @Override
+    public IPage<OrderInfo> selectPage(Page<OrderInfo> pageParam, OrderQueryVo orderQueryVo) {
+        //orderQueryVo获取条件值
+        String name = orderQueryVo.getKeyword(); //医院名称
+        Long patientId = orderQueryVo.getPatientId(); //就诊人名称
+        String orderStatus = orderQueryVo.getOrderStatus(); //订单状态
+        String reserveDate = orderQueryVo.getReserveDate();//安排时间
+        String createTimeBegin = orderQueryVo.getCreateTimeBegin();
+        String createTimeEnd = orderQueryVo.getCreateTimeEnd();
+        //对条件值进行非空判断
+        QueryWrapper<OrderInfo> wrapper = new QueryWrapper<>();
+        if (!StringUtils.isEmpty(name)) {
+            wrapper.like("hosname", name);
+        }
+        if (!StringUtils.isEmpty(patientId)) {
+            wrapper.eq("patient_id", patientId);
+        }
+        if (!StringUtils.isEmpty(orderStatus)) {
+            wrapper.eq("order_status", orderStatus);
+        }
+        if (!StringUtils.isEmpty(reserveDate)) {
+            wrapper.ge("reserve_date", reserveDate);
+        }
+        if (!StringUtils.isEmpty(createTimeBegin)) {
+            wrapper.ge("create_time", createTimeBegin);
+        }
+        if (!StringUtils.isEmpty(createTimeEnd)) {
+            wrapper.le("create_time", createTimeEnd);
+        }
+        //调用mapper的方法
+        IPage<OrderInfo> pages = baseMapper.selectPage(pageParam, wrapper);
+        //编号变成对应值封装
+        pages.getRecords().forEach(this::packOrderInfo);
+        return pages;
 
     }
 

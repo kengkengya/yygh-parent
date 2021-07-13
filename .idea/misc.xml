@@ -16,6 +16,7 @@
     <option name="modulesWithSuppressedNotConfigured">
       <set>
         <option value="service-order" />
+        <option value="service-order-client" />
       </set>
     </option>
   </component>

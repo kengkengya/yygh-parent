@@ -8,7 +8,7 @@
     1.2 配置文件一般放在config文件夹下，主要配置各类的配置文件。  
 2. SpringCloud  
     1.1 nacos  注册中心  
-    1.2 Feign  服务调用
+    1.2 Feign  服务调用  
     1.3 Gateway  网关整合微服务  
 3. Redis  
     1.1 使用Redis 作为缓存使用  
@@ -34,7 +34,12 @@
 11. 容联云  
     1.1 免费短信服务  
 12. 定时任务  
-    启动@Scheduling 注解
+    启动@Scheduling 注解  
+13. -------前端技术--------vue  
+14. element-ui  
+15. nuxt 后端SSR渲染技术  
+16. npm  
+17. echarts
  
 
 

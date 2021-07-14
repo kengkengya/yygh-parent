@@ -47,7 +47,11 @@
 
 
 #### 软件架构
-软件架构说明
+
+![软件架构说明](https://images.gitee.com/uploads/images/2021/0714/101216_9d9a0d6c_8238864.png "尚医通架构图.png")
+
+#### 业务流程
+![业务流程](https://images.gitee.com/uploads/images/2021/0714/101424_e6104b29_8238864.png "尚医通业务流程.png")
 
 
 #### 开发软件

@@ -11,13 +11,13 @@
 6. JWT
 7. easyExcel
 8. Mybatis-plus
-9. aliyun-sdk-oss
-10.WXplay
-11.容联云
-12.spring-cloud-starter-openfeign
-13.spring-cloud-starter-gateway
-14.spring-cloud-starter-alibaba-nacos-discovery
-15.RabbitMq
+9. aliyun-sdk-oss  
+10.WXplay  
+11.容联云  
+12.spring-cloud-starter-openfeign  
+13.spring-cloud-starter-gateway  
+14.spring-cloud-starter-alibaba-nacos-discovery  
+15.RabbitMq  
 #### 软件架构
 软件架构说明
 
